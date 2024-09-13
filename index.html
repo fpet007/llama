@@ -1,0 +1,519 @@
+<html><head><base href="https://deepinfra.com/"></base>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant IA Material Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --primary-color: #6200ee;
+  --primary-dark: #3700b3;
+  --primary-light: #bb86fc;
+  --secondary-color: #03dac6;
+  --background: #ffffff;
+  --surface: #ffffff;
+  --error: #b00020;
+  --on-primary: #ffffff;
+  --on-secondary: #000000;
+  --on-background: #000000;
+  --on-surface: #000000;
+  --on-error: #ffffff;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--on-background);
+}
+
+.app-bar {
+  background-color: var(--primary-color);
+  color: var(--on-primary);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.menu-icon {
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px);
+}
+
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.message {
+  max-width: 80%;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.user-message {
+  background-color: var(--primary-light);
+  color: var(--on-primary);
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.ai-message {
+  background-color: var(--surface);
+  color: var(--on-surface);
+}
+
+.input-area {
+  display: flex;
+  padding: 16px;
+  background-color: var(--surface);
+  box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+}
+
+#user-input {
+  flex-grow: 1;
+  border: none;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 24px;
+  background-color: #f5f5f5;
+  margin-right: 8px;
+}
+
+#send-button {
+  background-color: var(--secondary-color);
+  color: var(--on-secondary);
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100%;
+  background-color: var(--surface);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-header {
+  padding: 16px;
+  background-color: var(--primary-color);
+  color: var(--on-primary);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.conversation-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.conversation-item {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+.conversation-item:hover {
+  background-color: #f5f5f5;
+}
+
+.new-conversation-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background-color: var(--secondary-color);
+  color: var(--on-secondary);
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+}
+
+.ripple {
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.ripple:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #000 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .5s, opacity 1s;
+}
+
+.ripple:active:after {
+  transform: scale(0, 0);
+  opacity: .2;
+  transition: 0s;
+}
+
+@media (max-width: 600px) {
+  .message {
+    max-width: 90%;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="app-bar">
+    <i class="material-icons menu-icon" id="menu-icon">menu</i>
+    <span class="app-title">Assistant IA Material Design</span>
+  </div>
+  
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">Conversations</div>
+    <button class="new-conversation-btn ripple" id="new-conversation">Nouvelle conversation</button>
+    <ul class="conversation-list" id="conversation-list">
+      <!-- Les conversations seront ajoutées ici -->
+    </ul>
+  </div>
+  
+  <div class="chat-container">
+    <div class="messages" id="chat-messages">
+      <!-- Les messages seront insérés ici -->
+    </div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Tapez votre message...">
+      <button id="send-button" class="ripple">
+        <i class="material-icons">send</i>
+      </button>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"></script>
+  <script>
+    const menuIcon = document.getElementById('menu-icon');
+    const sidebar = document.getElementById('sidebar');
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const newConversationButton = document.getElementById('new-conversation');
+    const conversationList = document.getElementById('conversation-list');
+
+    let isUserScrolling = false;
+    let lastScrollTop = 0;
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+    }
+
+    menuIcon.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!sidebar.contains(event.target) && !menuIcon.contains(event.target)) {
+        closeSidebar();
+      }
+    });
+
+    chatMessages.addEventListener('scroll', () => {
+      isUserScrolling = true;
+      lastScrollTop = chatMessages.scrollTop;
+      clearTimeout(chatMessages.scrollTimer);
+      chatMessages.scrollTimer = setTimeout(() => {
+        isUserScrolling = false;
+      }, 100);
+    });
+
+    const rippleButtons = document.querySelectorAll('.ripple');
+    rippleButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        this.appendChild(ripple);
+        const x = e.clientX - this.offsetLeft;
+        const y = e.clientY - this.offsetTop;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    const API_URL = 'https://api.deepinfra.com/v1/openai/chat/completions';
+    const API_KEY = 'sI1UE9Tf1NQ10VP5nVOvCze98ks5PjVY';
+
+    let conversationHistory = [];
+    let conversations = [];
+    let currentConversationIndex = -1;
+
+    function saveConversationsToLocalStorage() {
+      localStorage.setItem('conversations', JSON.stringify(conversations));
+    }
+
+    function loadConversationsFromLocalStorage() {
+      const savedConversations = localStorage.getItem('conversations');
+      if (savedConversations) {
+        conversations = JSON.parse(savedConversations);
+        updateConversationList();
+      }
+    }
+
+    function addMessage(content, isUser = false) {
+      if (!chatMessages) {
+        console.error('Chat messages container not found');
+        return;
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+
+      if (isUser) {
+        messageDiv.textContent = content;
+      } else {
+        try {
+          messageDiv.innerHTML = marked(content, {
+            highlight: function(code, lang) {
+              if (lang && hljs.getLanguage(lang)) {
+                return hljs.highlight(code, { language: lang }).value;
+              }
+              return hljs.highlightAuto(code).value;
+            }
+          });
+
+          messageDiv.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+          });
+        } catch (error) {
+          console.error('Error rendering message:', error);
+          messageDiv.textContent = content;
+        }
+      }
+
+      const wasScrolledToBottom = chatMessages.scrollHeight - chatMessages.clientHeight <= chatMessages.scrollTop + 1;
+
+      chatMessages.appendChild(messageDiv);
+
+      if (!isUserScrolling && wasScrolledToBottom) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    function saveConversation() {
+      if (currentConversationIndex === -1) {
+        currentConversationIndex = conversations.length;
+        conversations.push({
+          title: conversationHistory[0].content.substring(0, 30) + '...',
+          messages: [...conversationHistory]
+        });
+      } else {
+        conversations[currentConversationIndex].messages = [...conversationHistory];
+      }
+      updateConversationList();
+      saveConversationsToLocalStorage();
+    }
+
+    function updateConversationList() {
+      conversationList.innerHTML = '';
+      conversations.forEach((conv, index) => {
+        const li = document.createElement('li');
+        li.className = 'conversation-item';
+        li.textContent = conv.title;
+        li.onclick = () => loadConversation(index);
+        
+        const deleteIcon = document.createElement('span');
+        deleteIcon.className = 'delete-icon';
+        deleteIcon.textContent = '🗑️';
+        deleteIcon.onclick = (e) => {
+          e.stopPropagation();
+          deleteConversation(index);
+        };
+        
+        li.appendChild(deleteIcon);
+        conversationList.appendChild(li);
+      });
+    }
+
+    function loadConversation(index) {
+      currentConversationIndex = index;
+      conversationHistory = [...conversations[index].messages];
+      chatMessages.innerHTML = '';
+      conversationHistory.forEach(msg => addMessage(msg.content, msg.role === 'user'));
+      closeSidebar();
+    }
+
+    function deleteConversation(index) {
+      conversations.splice(index, 1);
+      if (currentConversationIndex === index) {
+        currentConversationIndex = -1;
+        conversationHistory = [];
+        chatMessages.innerHTML = '';
+      } else if (currentConversationIndex > index) {
+        currentConversationIndex--;
+      }
+      updateConversationList();
+      saveConversationsToLocalStorage();
+    }
+
+    async function sendMessage() {
+      const userMessage = userInput.value.trim();
+      if (userMessage === '') return;
+
+      addMessage(userMessage, true);
+      userInput.value = '';
+
+      conversationHistory.push({ role: "user", content: userMessage });
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "meta-llama/Meta-Llama-3.1-405B-Instruct",
+            stream: true,
+            messages: [
+              { role: "system", content: "Vous êtes un assistant IA avancé capable de structurer vos réponses avec des paragraphes concis, des points lorsque nécessaire, et des sauts de ligne appropriés pour une meilleure lisibilité. Utilisez le format Markdown pour structurer vos réponses, y compris les titres, le texte en gras, les listes et le formatage de code pour HTML et Python. Assurez-vous que vos réponses sont agréables à lire et bien détaillées tout en maintenant une structure compacte. Répondez toujours en français." },
+              ...conversationHistory
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let aiResponse = '';
+        let aiMessageDiv = document.createElement('div');
+        aiMessageDiv.classList.add('message', 'ai-message');
+        chatMessages.appendChild(aiMessageDiv);
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data:')) {
+              try {
+                const data = JSON.parse(line.slice(5));
+                if (data.choices && data.choices[0].delta && data.choices[0].delta.content) {
+                  const content = data.choices[0].delta.content;
+                  aiResponse += content;
+                  aiMessageDiv.innerHTML = marked(aiResponse, {
+                    highlight: function(code, lang) {
+                      if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang }).value;
+                      }
+                      return hljs.highlightAuto(code).value;
+                    }
+                  });
+                  aiMessageDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                  });
+                  
+                  if (!isUserScrolling && chatMessages.scrollHeight - chatMessages.clientHeight <= lastScrollTop + 1) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                  }
+                }
+              } catch (e) {
+                console.error('Erreur lors de l\'analyse JSON:', e);
+              }
+            }
+          }
+        }
+
+        conversationHistory.push({ role: "assistant", content: aiResponse });
+        saveConversation();
+      } catch (error) {
+        console.error('Erreur:', error);
+        addMessage('Désolé, une erreur s\'est produite lors du traitement de votre demande. Veuillez réessayer.');
+      }
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    newConversationButton.addEventListener('click', () => {
+      currentConversationIndex = -1;
+      conversationHistory = [];
+      chatMessages.innerHTML = '';
+      addMessage(`# Nouvelle conversation
+
+Bonjour ! Je suis votre assistant IA amélioré. Comment puis-je vous aider aujourd'hui ?
+
+Je suis prêt à discuter de n'importe quel sujet et à répondre à vos questions de manière claire et structurée. N'hésitez pas à me poser des questions sur divers sujets, je ferai de mon mieux pour vous fournir des réponses bien organisées et faciles à lire.`);
+      closeSidebar();
+    });
+
+    addMessage(`# Bienvenue dans votre assistant IA amélioré
+
+Bonjour ! Je suis ravi de vous aider aujourd'hui. 
+
+N'hésitez pas à me poser des questions sur n'importe quel sujet. Je suis là pour vous aider !`);
+    
+    function adjustLayoutForScreenSize() {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('open');
+      }
+    }
+
+    window.addEventListener('resize', adjustLayoutForScreenSize);
+    adjustLayoutForScreenSize();
+
+    try {
+      document.addEventListener('DOMContentLoaded', (event) => {
+        loadConversationsFromLocalStorage();
+        if (typeof hljs !== 'undefined' && hljs.highlightAll) {
+          hljs.highlightAll();
+        } else {
+          console.warn('highlight.js is not available');
+        }
+      });
+    } catch (error) {
+      console.error('Error in DOMContentLoaded event:', error);
+    }
+  </script>
+</body>
+</html>
